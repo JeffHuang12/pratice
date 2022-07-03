@@ -1,0 +1,61 @@
+# Google sheet api  https://www.maxlist.xyz/2018/09/25/python_googlesheet_crud/
+import pygsheets
+# 讀取金鑰
+gc = pygsheets.authorize(service_file='/Users/jeffhuang/Documents/python/midyear-reactor-355106-aa799eb3af18.json')
+
+sht = gc.open_by_url(
+'https://docs.google.com/spreadsheets/d/1Pn3SSFYTBI0Ezf7v-OoKjDjs1lo6ISRjEkF8xOme8sA/edit#gid=0'
+)
+
+# 2.查看此 GoogleSheet 內 Sheet 清單
+wks_list = sht.worksheets()
+print(wks_list)
+
+#選取by順序
+wks = sht[0]
+
+# #選取by名稱
+# wks2 = sht.worksheet_by_title("工作表1")
+# #更新名稱
+wks.title = "super8"
+
+# #隱藏清單
+wks.hidden = False
+
+import pandas as pd
+#讀取
+A1 = wks.cell('A1')
+A1.value
+
+#讀取成 df
+df = pd.DataFrame(wks.get_all_records())
+#讀取 df 也可以這樣寫
+# wk1.get_as_df()
+# #匯出CSV
+# wks.export(pygsheets.ExportType.CSV)
+len(df['date'])
+
+# # dataframe to worksheet
+# wks.set_dataframe(df, 'A1') #從欄位 A1 開始
+
+# # Update
+# wks.update_cell('A1', "ss")
+# # wks3.update_cells('A2:A5',[['name1'],['name2'],['name3'],['name4']])
+
+df = pd.DataFrame(wks.get_all_records())
+print(df)
+
+date_records = "A"+str(len(df['date'])+2)
+date_value = "abc"
+
+count_records = "B"+str(len(df['date'])+2)
+count_value = "aaa"
+
+rc = date_records+":"+count_records
+print(rc)
+print([[date_value],[count_value]])
+# Update the worksheet with the numpy array values. Beginning at cell 'A2'.
+wks.update_value(date_records, date_value)
+wks.update_value(count_records, count_value)
+
+
